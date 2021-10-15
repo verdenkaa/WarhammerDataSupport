@@ -3,7 +3,7 @@ from PyQt5 import uic, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 
-class MyWidget(QMainWindow):
+class RasaChoice(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('facer.ui', self)
@@ -56,7 +56,7 @@ def except_hook(cls, exception, traceback):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    form = MyWidget()
+    form = RasaChoice()
     form.show()
     sys.excepthook = except_hook
     sys.exit(app.exec())
