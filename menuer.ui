@@ -27,7 +27,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>main_face_fon.png</pixmap>
+     <pixmap>images/main_face_fon.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -70,7 +70,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Choice your soldier</string>
+     <string>Choice your soldiers</string>
     </property>
    </widget>
    <widget class="QPushButton" name="Lider_choice">
@@ -90,7 +90,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Choice your lider</string>
+     <string>Database</string>
     </property>
    </widget>
    <widget class="QPushButton" name="Create_army">

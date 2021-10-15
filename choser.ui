@@ -27,7 +27,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>CleanData.png</pixmap>
+     <pixmap>images/CleanData.png</pixmap>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit">
@@ -151,64 +151,64 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>160</y>
+      <y>150</y>
       <width>151</width>
-      <height>191</height>
+      <height>201</height>
      </rect>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>astartes.png</pixmap>
+     <pixmap>images/astartes.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>160</y>
+      <y>150</y>
       <width>151</width>
-      <height>191</height>
+      <height>201</height>
      </rect>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>necrons.png</pixmap>
+     <pixmap>images/necrons.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
       <x>360</x>
-      <y>160</y>
+      <y>150</y>
       <width>151</width>
-      <height>191</height>
+      <height>201</height>
      </rect>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>bubonic.png</pixmap>
+     <pixmap>images/bubonic.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
       <x>520</x>
-      <y>160</y>
+      <y>150</y>
       <width>151</width>
-      <height>191</height>
+      <height>201</height>
      </rect>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>orcs.png</pixmap>
+     <pixmap>images/orcs.png</pixmap>
     </property>
    </widget>
    <widget class="QCheckBox" name="checkBox">
@@ -324,6 +324,19 @@
       <width>113</width>
       <height>20</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>450</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;--   Back</string>
     </property>
    </widget>
   </widget>

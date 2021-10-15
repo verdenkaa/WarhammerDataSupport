@@ -1,18 +1,22 @@
 import sys
-from PyQt5 import uic, QtCore, QtGui
+from PyQt5 import uic, QtCore
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from main import RasaChoice
+from chocer import RasaChoice
 
 
-class Main_face(QMainWindow):
+class Menu(QMainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('main_face.ui', self)
+        uic.loadUi('menuer.ui', self)
         #загружаем интерфейс
         self.Soldier_choice.clicked.connect(self.soldiers)
     
     def soldiers(self):
-        sold = RasaChoice()
+        self.hide()
+        sold = RasaChoice(Menu())
+        sold.setWindowTitle('Warhammer Data Support')
+        sold.setWindowIcon(QIcon('images/icon.png'))
         sold.show()
 
 
@@ -21,7 +25,9 @@ def except_hook(cls, exception, traceback):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    form = Main_face()
+    form = Menu()
+    form.setWindowTitle('Warhammer Data Support')
+    form.setWindowIcon(QIcon('images/icon.png'))
     form.show()
     sys.excepthook = except_hook
     sys.exit(app.exec())

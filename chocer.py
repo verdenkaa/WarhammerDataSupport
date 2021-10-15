@@ -1,12 +1,14 @@
 import sys
-from PyQt5 import uic, QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5 import uic, QtGui
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QMainWindow
 
 
 class RasaChoice(QMainWindow):
-    def __init__(self):
+    def __init__(self, forback):
         super().__init__()
-        uic.loadUi('facer.ui', self)
+        uic.loadUi('choser.ui', self)
+        self.forback = forback
         # Создание нужных для работы переменных со стартовыми значениями
         self.rases = ["marines", "necrons", "bubonic", "orcs"]
         self.StartUnit = [0, 6, 6, 13, 13, 100, 20, 100, 0]
@@ -23,6 +25,7 @@ class RasaChoice(QMainWindow):
         self.lineEdit_10.setValidator(QtGui.QIntValidator(0, 999))
         # Подключение функционала кнопок и чекеров
         self.pushButton_2.clicked.connect(self.helper)
+        self.pushButton_3.clicked.connect(self.backtomenu)
         self.pushButton.clicked.connect(self.startsorting)
         self.checkBox.stateChanged.connect(lambda: self.addrace(self.checkBox, "marines", 0))
         self.checkBox_2.stateChanged.connect(lambda: self.addrace(self.checkBox_2, "necrons", 1))
@@ -31,8 +34,10 @@ class RasaChoice(QMainWindow):
         
     def helper(self):
         # Функция для вызова окна помощи
-        self.w = Helper()
-        self.w.show()
+        self.helpwindow = Helper()
+        self.helpwindow.setWindowTitle('Warhammer Data Support')
+        self.helpwindow.setWindowIcon(QIcon('images/icon.png'))
+        self.helpwindow.show()
 
     def addrace(self, checker, rase, number):
         # Добавлене и удаление разных рас в учет при сортировке
@@ -40,6 +45,12 @@ class RasaChoice(QMainWindow):
             self.rases[number] = rase
         else:
             self.rases[number] = "NoneRacePleaceInore"
+
+    def backtomenu(self):
+        self.hide()
+        self.forback.setWindowTitle('Warhammer Data Support')
+        self.forback.setWindowIcon(QIcon('images/icon.png'))
+        self.forback.show()
 
     def startsorting(self):
         print(self.rases)
@@ -53,10 +64,3 @@ class Helper(QMainWindow):
 
 def except_hook(cls, exception, traceback):
     sys.__excepthook__(cls, exception, traceback)
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    form = RasaChoice()
-    form.show()
-    sys.excepthook = except_hook
-    sys.exit(app.exec())
