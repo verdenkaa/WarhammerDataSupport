@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QMainWindow
 class RasaChoice(QMainWindow):
     def __init__(self, forback):
         super().__init__()
-        uic.loadUi('choser.ui', self)
+        uic.loadUi('ui/choser.ui', self)
         self.forback = forback
         # Создание нужных для работы переменных со стартовыми значениями
         self.rases = ["marines", "necrons", "bubonic", "orcs"]
@@ -36,7 +36,7 @@ class RasaChoice(QMainWindow):
         # Функция для вызова окна помощи
         self.helpwindow = Helper()
         self.helpwindow.setWindowTitle('Warhammer Data Support')
-        self.helpwindow.setWindowIcon(QIcon('images/icon.png'))
+        self.helpwindow.setWindowIcon(QIcon('ui\images\icon.png'))
         self.helpwindow.show()
 
     def addrace(self, checker, rase, number):
@@ -49,7 +49,7 @@ class RasaChoice(QMainWindow):
     def backtomenu(self):
         self.hide()
         self.forback.setWindowTitle('Warhammer Data Support')
-        self.forback.setWindowIcon(QIcon('images/icon.png'))
+        self.forback.setWindowIcon(QIcon('ui\images\icon.png'))
         self.forback.show()
 
     def startsorting(self):
@@ -59,7 +59,7 @@ class Helper(QMainWindow):
     # Класс окна помощи
     def __init__(self):
         super().__init__()
-        uic.loadUi('help.ui', self)
+        uic.loadUi('ui\help.ui', self)
 
 
 def except_hook(cls, exception, traceback):

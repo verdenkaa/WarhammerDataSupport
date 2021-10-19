@@ -73,7 +73,7 @@
      <string>Choice your soldiers</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="Lider_choice">
+   <widget class="QPushButton" name="dater">
     <property name="geometry">
      <rect>
       <x>503</x>
