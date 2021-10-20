@@ -23,9 +23,25 @@ class Dater(QMainWindow):
         self.tableView.setModel(model)
         # Меняем размер столбцов в зависимости от их длинны
         self.tableView.resizeColumnsToContents()
+        self.pushButton_2.clicked.connect(self.helper)
 
     def back(self):
         self.hide()
         self.forback.setWindowTitle('Warhammer Data Support')
         self.forback.setWindowIcon(QIcon('ui\images\icon.png'))
         self.forback.show()
+
+    def helper(self):
+        # Функция для вызова окна помощи
+        self.helpwindow = Helper()
+        self.helpwindow.setWindowTitle('Warhammer Data Support')
+        self.helpwindow.setWindowIcon(QIcon('ui\images\icon.png'))
+        self.helpwindow.show()
+
+
+
+class Helper(QMainWindow):
+    # Класс окна помощи
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('ui\help.ui', self)

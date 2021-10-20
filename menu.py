@@ -15,6 +15,7 @@ class Menu(QMainWindow):
         self.std_db = "off_units.sqlite"
         self.Soldier_choice.clicked.connect(self.soldiers)
         self.dater.clicked.connect(self.databases)
+        self.pushButton.clicked.connect(self.settings)
     
     def soldiers(self):
         self.hide()
@@ -29,6 +30,19 @@ class Menu(QMainWindow):
         self.daterwindow.setWindowTitle('Warhammer Data Support')
         self.daterwindow.setWindowIcon(QIcon('ui\images\icon.png'))
         self.daterwindow.show()
+
+    def settings(self):
+        self.settingswindow = Settings()
+        self.settingswindow.setWindowTitle('Warhammer Data Support')
+        self.settingswindow.setWindowIcon(QIcon('ui\images\icon.png'))#!!!!!!!!Лучше заменить на шестеренку
+        self.settingswindow.show()
+
+
+class Settings(QMainWindow):
+    # Класс окна настроек
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('ui\settings.ui', self)
 
 
 def except_hook(cls, exception, traceback):
