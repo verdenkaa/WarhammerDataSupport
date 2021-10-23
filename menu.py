@@ -1,10 +1,12 @@
-import sys
+import sys, base64, requests
 from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtSql import QSqlDatabase, QSqlTableModel
 from chocer import RasaChoice
 from databaser import Dater
+
+version = 0.1
+dbversion = 0.1
 
 
 class Menu(QMainWindow):
@@ -16,7 +18,6 @@ class Menu(QMainWindow):
         self.Soldier_choice.clicked.connect(self.soldiers)
         self.dater.clicked.connect(self.databases)
         self.pushButton.clicked.connect(self.settings)
-        # Я Никиата, нужно добавить сюда проверку баз векрсии приложения!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     
     def soldiers(self):
         self.hide()
@@ -44,7 +45,36 @@ class Settings(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('ui\settings.ui', self)
+        self.Update.clicked.connect(self.FindUpdate)
         # Я Никиата, нужно добавить сюда проверку баз данных!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    def FindUpdate(self):
+        global version
+        global dbversion
+        req = requests.get("https://api.github.com/repos/verdenkaa/WarhammerDataSupport/contents/soursecontrol.txt")
+        self.updateBar.setValue(20)
+        if req.status_code == requests.codes.ok:
+            req = req.json()
+            self.updateBar.setValue(30)
+            content = base64.b64decode(req['content']).decode("utf-8").split()
+            self.updateBar.setValue(70)
+            if float(content[0]) > version:
+                self.urlUpdate.setText("<a href='https://github.com/verdenkaa/WarhammerDataSupport'> Версия устарела, обновите приложение </a>")
+                self.urlUpdate.setOpenExternalLinks(True)
+                self.urlUpdate.setStyleSheet("color: red")
+                self.updateBar.setValue(100)
+            elif float(content[1]) > dbversion:
+                self.urlUpdate.setText("Обновите базу данных")
+                self.urlUpdate.setStyleSheet("color: red")
+                self.updateBar.setValue(100)
+            else:
+                self.urlUpdate.setText("У вас актуальная версия")
+                self.urlUpdate.setStyleSheet("color: lightgreen")
+                self.updateBar.setValue(100)
+        else:
+            self.updateBar.setValue(0)
+            self.urlUpdate.setText("Технические шоколадки, проверьте интернет")
+
 
 
 def except_hook(cls, exception, traceback):

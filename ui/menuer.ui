@@ -70,7 +70,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Choice your soldiers</string>
+     <string>Подбор юнитов</string>
     </property>
    </widget>
    <widget class="QPushButton" name="dater">
@@ -90,7 +90,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Database</string>
+     <string>База данных</string>
     </property>
    </widget>
    <widget class="QPushButton" name="Create_army">
@@ -110,7 +110,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Create your army</string>
+     <string>Создание армии</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
