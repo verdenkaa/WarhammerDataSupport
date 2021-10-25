@@ -1,4 +1,5 @@
 import sys, base64, requests
+import urllib.request
 from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow
@@ -46,6 +47,7 @@ class Settings(QMainWindow):
         super().__init__()
         uic.loadUi('ui\settings.ui', self)
         self.Update.clicked.connect(self.FindUpdate)
+        self.dbUpdate.clicked.connect(self.dbUpdateOnline)
         # Я Никиата, нужно добавить сюда проверку баз данных!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     def FindUpdate(self):
@@ -74,6 +76,19 @@ class Settings(QMainWindow):
         else:
             self.updateBar.setValue(0)
             self.urlUpdate.setText("Технические шоколадки, проверьте интернет")
+
+    def dbUpdateOnline(self):
+        req = requests.get("https://api.github.com/repos/verdenkaa/WarhammerDataSupport/contents/textbase.txt")
+        urllib.request.urlretrieve(req, "db/notimedb.db")
+        if req.status_code == requests.codes.ok and False:
+            req = req.json()
+            self.updateBar.setValue(30)
+            content = base64.b64decode(req['content'])
+            a = open("test.db", "w")
+            a.writelines(str(content))
+            print("qwerty")
+        else:
+            print("No")
 
 
 

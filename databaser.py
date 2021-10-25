@@ -21,7 +21,6 @@ class Dater(QMainWindow):
         # Подключаем выход обратно в меню
         self.pushButton.clicked.connect(self.back)
 
-        # Меняем размер столбцов в зависимости от их длинны
         self.pushButton_2.clicked.connect(self.helper)
 
     def table_creator(self):

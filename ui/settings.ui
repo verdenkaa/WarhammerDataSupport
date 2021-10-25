@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="bdUpdate">
+   <widget class="QPushButton" name="dbUpdate">
     <property name="geometry">
      <rect>
       <x>260</x>
@@ -27,7 +27,7 @@
      <string>Обновить базу данных</string>
     </property>
    </widget>
-   <widget class="QProgressBar" name="bdUpdateBar">
+   <widget class="QProgressBar" name="dbUpdateBar">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -59,7 +59,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="bdAdd">
+   <widget class="QPushButton" name="dbAdd">
     <property name="geometry">
      <rect>
       <x>260</x>
@@ -72,7 +72,7 @@
      <string>Добавить базу данных</string>
     </property>
    </widget>
-   <widget class="QProgressBar" name="bdAddBar">
+   <widget class="QProgressBar" name="dbAddBar">
     <property name="geometry">
      <rect>
       <x>130</x>
