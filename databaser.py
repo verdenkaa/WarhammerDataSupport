@@ -34,7 +34,7 @@ class Dater(QMainWindow):
         for i in range(len(self.datasheets)):
             for j in range(len(self.datasheets[i])):
                 if self.datasheets[i][j] != self.datasheets[i][-1]:
-                    self.tables.setItem(i, j, QTableWidgetItem(str(self.datasheets[i][j])))
+                    self.tables.setItem(i, j, QTableWidgetItem(str(self.datasheets[i][j]))) #меняем в ячейке таблички значения на данные из sql
                 else:
                     image = QLabel(self)
                     pix = QPixmap(str(self.datasheets[i][j]))
