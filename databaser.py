@@ -2,7 +2,7 @@ import sys
 from PyQt5 import uic
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import QTableView, QApplication, QMainWindow, QApplication, QGridLayout, QWidget, QTableWidget, QTableWidgetItem, QLabel
+from PyQt5.QtWidgets import QTableView, QApplication, QMainWindow, QApplication, QGridLayout, QWidget, QTableWidget, QTableWidgetItem, QLabel, QPushButton
 import sqlite3
 
 
@@ -24,27 +24,36 @@ class Dater(QMainWindow):
         self.pushButton_2.clicked.connect(self.helper)
 
     def table_creator(self):
-        self.tables.setColumnCount(15)     # Устанавливаем нужное кол-во колонок
+        self.tables.setColumnCount(16)     # Устанавливаем нужное кол-во колонок
         self.tables.setRowCount(len(self.datasheets))        # и количество элементов в таблице
 
         # Устанавливаем заголовки таблицы
-        self.tables.setHorizontalHeaderLabels(['Name', 'Type', 'Rase', 'Power', 'Points', 'Move', 'Weapon Skill', 'Ballistic Skill', 'Strength', 'Toughness', 'Wound', 'Attacs', 'Leadership', 'Save', 'Look'])
+        self.tables.setHorizontalHeaderLabels(['Name', 'Type', 'Rase', 'Power', 'Points', 'Move', 'Weapon Skill', 'Ballistic Skill', 'Strength', 'Toughness', 'Wound', 'Attacs', 'Leadership', 'Save', 'Look', 'Add to my army list'])
 
         # заполняем столбцы
+        self.button_list = [QPushButton('Добавить в список моей армии', self) for i in range(len(self.datasheets))]
         for i in range(len(self.datasheets)):
             for j in range(len(self.datasheets[i])):
-                if self.datasheets[i][j] != self.datasheets[i][-1]:
-                    self.tables.setItem(i, j, QTableWidgetItem(str(self.datasheets[i][j]))) #меняем в ячейке таблички значения на данные из sql
-                else:
+                if self.datasheets[i][j] == self.datasheets[i][-2]:
                     image = QLabel(self)
                     pix = QPixmap(str(self.datasheets[i][j]))
                     _size = QSize(200, 100) 
                     image.setPixmap(pix.scaled(_size, Qt.KeepAspectRatio))
                     self.tables.setCellWidget(i, j, image)
-
+                elif self.datasheets[i][j] == self.datasheets[i][-1]:
+                    self.tables.setCellWidget(i, j, self.button_list[i])
+                    self.conn(self.button_list[i], self.datasheets[i][0])
+                else:
+                    self.tables.setItem(i, j, QTableWidgetItem(str(self.datasheets[i][j]))) #меняем в ячейке таблички значения на данные из sql
 
         # делаем ресайз колонок по содержимому
         self.tables.resizeColumnsToContents()
+
+    def conn(self, a, unit_name):
+        a.clicked.connect(lambda: self.add_unit(unit_name))
+    
+    def add_unit(self, unit_name):
+        print(unit_name)
 
     def back(self):
         self.hide()
