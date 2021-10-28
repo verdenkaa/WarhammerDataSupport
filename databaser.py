@@ -42,18 +42,24 @@ class Dater(QMainWindow):
                     self.tables.setCellWidget(i, j, image)
                 elif self.datasheets[i][j] == self.datasheets[i][-1]:
                     self.tables.setCellWidget(i, j, self.button_list[i])
-                    self.conn(self.button_list[i], self.datasheets[i][0])
+                    self.conn(self.button_list[i], self.datasheets[i][0], self.datasheets[i][2])
                 else:
                     self.tables.setItem(i, j, QTableWidgetItem(str(self.datasheets[i][j]))) #меняем в ячейке таблички значения на данные из sql
 
         # делаем ресайз колонок по содержимому
         self.tables.resizeColumnsToContents()
 
-    def conn(self, a, unit_name):
-        a.clicked.connect(lambda: self.add_unit(unit_name))
+    def conn(self, a, unit_name, rase):
+        a.clicked.connect(lambda: self.add_unit(unit_name, rase))
     
-    def add_unit(self, unit_name):
-        print(unit_name)
+    def add_unit(self, unit_name, rase):
+        c = 'army_list/' + str(rase) + '.txt'
+        d = open(c, mode = "a+")
+        data = d.read().split('\n')
+        if unit_name not in data:
+            data.append(unit_name)
+        d.write('\n'.join(data))
+        d.close()
 
     def back(self):
         self.hide()
