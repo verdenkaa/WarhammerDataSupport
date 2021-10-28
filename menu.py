@@ -1,5 +1,5 @@
 import sys, base64, requests
-import urllib.request
+import os,  wget
 from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow
@@ -48,47 +48,61 @@ class Settings(QMainWindow):
         uic.loadUi('ui\settings.ui', self)
         self.Update.clicked.connect(self.FindUpdate)
         self.dbUpdate.clicked.connect(self.dbUpdateOnline)
-        # Я Никиата, нужно добавить сюда проверку баз данных!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     def FindUpdate(self):
         global version
         global dbversion
-        req = requests.get("https://api.github.com/repos/verdenkaa/WarhammerDataSupport/contents/soursecontrol.txt")
-        self.updateBar.setValue(20)
-        if req.status_code == requests.codes.ok:
-            req = req.json()
-            self.updateBar.setValue(30)
-            content = base64.b64decode(req['content']).decode("utf-8").split()
-            self.updateBar.setValue(70)
-            if float(content[0]) > version:
-                self.urlUpdate.setText("<a href='https://github.com/verdenkaa/WarhammerDataSupport'> Версия устарела, обновите приложение </a>")
-                self.urlUpdate.setOpenExternalLinks(True)
-                self.urlUpdate.setStyleSheet("color: red")
-                self.updateBar.setValue(100)
-            elif float(content[1]) > dbversion:
-                self.urlUpdate.setText("Обновите базу данных")
-                self.urlUpdate.setStyleSheet("color: red")
-                self.updateBar.setValue(100)
+        try:
+            # Считываем значения с облака
+            req = requests.get("https://api.github.com/repos/verdenkaa/WarhammerDataSupport/contents/soursecontrol.txt")
+            self.updateBar.setValue(20)
+            # Проверяем данные на наличие ошибок
+            if req.status_code == requests.codes.ok:
+                req = req.json()
+                self.updateBar.setValue(30)
+                # Декодируем
+                content = base64.b64decode(req['content']).decode("utf-8").split()
+                self.updateBar.setValue(70)
+                # Если версия больше
+                if float(content[0]) > version:
+                    self.urlUpdate.setText("<a href='https://github.com/verdenkaa/WarhammerDataSupport'> Версия устарела, обновите приложение </a>")
+                    self.urlUpdate.setOpenExternalLinks(True)
+                    self.urlUpdate.setStyleSheet("color: red")
+                    self.updateBar.setValue(100)
+                # Если версия базы больше
+                elif float(content[1]) > dbversion:
+                    self.urlUpdate.setText("Обновите базу данных")
+                    self.urlUpdate.setStyleSheet("color: red")
+                    self.updateBar.setValue(100)
+                # иначе если актуальная версия
+                else:
+                    self.urlUpdate.setText("У вас актуальная версия")
+                    self.urlUpdate.setStyleSheet("color: lightgreen")
+                    self.updateBar.setValue(100)
+            # Здесь отлавливаем возможную ошибку в значениях 
             else:
-                self.urlUpdate.setText("У вас актуальная версия")
-                self.urlUpdate.setStyleSheet("color: lightgreen")
-                self.updateBar.setValue(100)
-        else:
+                self.updateBar.setValue(0)
+                self.urlUpdate.setText("Что-то не так, серьезная ошибка контроля версий, переустановите приложение")
+        except:
             self.updateBar.setValue(0)
             self.urlUpdate.setText("Технические шоколадки, проверьте интернет")
 
     def dbUpdateOnline(self):
-        req = requests.get("https://api.github.com/repos/verdenkaa/WarhammerDataSupport/contents/textbase.txt")
-        urllib.request.urlretrieve(req, "db/notimedb.db")
-        if req.status_code == requests.codes.ok and False:
-            req = req.json()
-            self.updateBar.setValue(30)
-            content = base64.b64decode(req['content'])
-            a = open("test.db", "w")
-            a.writelines(str(content))
-            print("qwerty")
-        else:
-            print("No")
+        try:
+            # Переменная сылка на базу данных
+            url = "https://github.com/verdenkaa/WarhammerDataSupport/blob/main/db/off_units.sqlite?raw=true"
+            self.dbUpdateBar.setValue(30)
+            # Проверка на наличие файла, может отсутствовать в ходе обновления без интернета или удаления его ручками
+            if os.path.exists("db/off_units.sqlite"):
+                os.remove("db/off_units.sqlite")
+            self.dbUpdateBar.setValue(50)
+            # Качаем последнюю версию с облака
+            wget.download(url, "db/off_units.sqlite")
+            self.dbUpdateBar.setValue(100)
+        except:
+            # Отлов всех ошибок, переустановка всегда должна помочь
+            self.dbUpdateBar.setValue(0)
+            self.urlUpdate.setText("Технические шоколадки, проверьте интернет или переустановите приложение")
 
 
 
