@@ -1,12 +1,12 @@
 import sys, base64, requests
-import os,  wget
+import os, wget
 from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from chocer import RasaChoice
 from databaser import Dater
 
-version = 0.1
+version = 0.2
 dbversion = 0.1
 
 

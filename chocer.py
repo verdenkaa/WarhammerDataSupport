@@ -11,7 +11,7 @@ class RasaChoice(QMainWindow):
         self.forback = forback
         self.std_db = std_db
         # Создание нужных для работы переменных со стартовыми значениями
-        self.rases = ["marines", "necrons", "bubonic", "orcs"]
+        self.rases = ["Astartes", "Necrons", "Bubonic", "Orcs"]
         self.StartUnit = [0, 6, 6, 13, 13, 100, 20, 100, 0]
         # Подключение защиты от дурака, доступен ввод только чисел в диапазоне от 0 до 999
         self.lineEdit.setValidator(QtGui.QIntValidator(0, 999))

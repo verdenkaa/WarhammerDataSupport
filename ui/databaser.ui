@@ -62,6 +62,26 @@
      <number>100</number>
     </attribute>
    </widget>
+   <widget class="QPushButton" name="clear_list_button">
+    <property name="geometry">
+     <rect>
+      <x>559</x>
+      <y>520</y>
+      <width>200</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Очистить список армии</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
