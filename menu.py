@@ -19,6 +19,7 @@ class Menu(QMainWindow):
         self.Soldier_choice.clicked.connect(self.soldiers)
         self.dater.clicked.connect(self.databases)
         self.pushButton.clicked.connect(self.settings)
+        self.Create_army.clicked.connect(self.army_list)
     
     def soldiers(self):
         self.hide()
@@ -39,6 +40,9 @@ class Menu(QMainWindow):
         self.settingswindow.setWindowTitle('Warhammer Data Support Settings')
         self.settingswindow.setWindowIcon(QIcon('ui\images\settings.jpg'))
         self.settingswindow.show()
+    
+    def army_list(self):
+        pass
 
 
 class Settings(QMainWindow):

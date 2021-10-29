@@ -38,7 +38,7 @@ class Dater(QMainWindow):
             for j in range(len(self.datasheets[i])):
                 if self.datasheets[i][j] == self.datasheets[i][-2]:  #проверка на 2 с конца элемент, там должно быть изображение
                     image = QLabel(self)
-                    pix = QPixmap(str(self.datasheets[i][j])) #Из списка с данными sql мы берем имя картинки
+                    pix = QPixmap('Unit_image/' + str(self.datasheets[i][j])) #Из списка с данными sql мы берем имя картинки
                     _size = QSize(200, 100) 
                     image.setPixmap(pix.scaled(_size, Qt.KeepAspectRatio)) #подгоняем размер
                     self.tables.setCellWidget(i, j, image) #вставляем widget в таблицу
