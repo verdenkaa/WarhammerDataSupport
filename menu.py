@@ -1,10 +1,11 @@
 import sys, base64, requests
 import os, wget
-from PyQt5 import uic, QtCore
+from PyQt5 import uic
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from chocer import RasaChoice
 from databaser import Dater
+from army import Armier
 
 version = 0.2
 dbversion = 0.1
@@ -15,7 +16,6 @@ class Menu(QMainWindow):
         super().__init__()
         uic.loadUi('ui\menuer.ui', self)
         # Стандартная используемая база данных
-        self.std_db = "off_units.sqlite"
         self.Soldier_choice.clicked.connect(self.soldiers)
         self.dater.clicked.connect(self.databases)
         self.pushButton.clicked.connect(self.settings)
@@ -23,14 +23,14 @@ class Menu(QMainWindow):
     
     def soldiers(self):
         self.hide()
-        self.sold = RasaChoice(Menu(), self.std_db)
+        self.sold = RasaChoice(Menu())
         self.sold.setWindowTitle('Warhammer Data Support')
         self.sold.setWindowIcon(QIcon('ui\images\icon.png'))
         self.sold.show()
 
     def databases(self):
         self.hide()
-        self.daterwindow = Dater(Menu(), self.std_db)
+        self.daterwindow = Dater(Menu())
         self.daterwindow.setWindowTitle('Warhammer Data Support')
         self.daterwindow.setWindowIcon(QIcon('ui\images\icon.png'))
         self.daterwindow.show()
@@ -42,7 +42,11 @@ class Menu(QMainWindow):
         self.settingswindow.show()
     
     def army_list(self):
-        pass
+        self.hide()
+        self.daterwindow = Armier(Menu())
+        self.daterwindow.setWindowTitle('Warhammer Data Support')
+        self.daterwindow.setWindowIcon(QIcon('ui\images\icon.png'))
+        self.daterwindow.show()
 
 
 class Settings(QMainWindow):

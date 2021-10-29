@@ -6,11 +6,11 @@ from PyQt5.QtWidgets import QTableView, QApplication, QMainWindow, QApplication,
 import sqlite3
 
 
-class Dater(QMainWindow):
+class Armier(QMainWindow):
     def __init__(self, forback):
         super().__init__()
-        uic.loadUi('ui\databaser.ui', self)
-        self.con = sqlite3.connect("db\off_units.sqlite")       #подключаем БД
+        uic.loadUi('ui/army.ui', self)
+        self.con = sqlite3.connect("db/off_units.sqlite")       #подключаем БД
         # Создание курсора
         self.cur = self.con.cursor()
         self.datasheets = self.cur.execute("""SELECT * FROM unit_datasheet
@@ -20,9 +20,7 @@ class Dater(QMainWindow):
         # Подключаем выход обратно в меню
         self.pushButton.clicked.connect(self.back)
 
-        self.pushButton_2.clicked.connect(self.helper)
-
-        self.clear_list_button.clicked.connect(self.clear_army_list)
+        self.HelpButton.clicked.connect(self.helper)
 
     def table_creator(self):
         self.tables.setColumnCount(16)     # Устанавливаем нужное кол-во колонок
@@ -60,16 +58,6 @@ class Dater(QMainWindow):
         data.append(unit_name) #добавляем имя юнита
         d.write('\n'.join(data))
         d.close()
-
-    def clear_army_list(self):
-        f, ok_pressed = QInputDialog.getItem(
-            self, "Выберите файл для очистки", "Выберите файл для очистки", 
-            ("Astartes.txt", "Necrons.txt", "Bubonic.txt", "Orcs.txt"), 1, False) #Диалоговое окно для выбора файла
-        c = 'army_list/' + f
-        d = open(c, mode = "w")
-        d.write('') #очищаем файл
-        d.close
-    
     def back(self):
         self.hide()
         self.forback.setWindowTitle('Warhammer Data Support')
@@ -82,7 +70,6 @@ class Dater(QMainWindow):
         self.helpwindow.setWindowTitle('Warhammer Data Support')
         self.helpwindow.setWindowIcon(QIcon('ui\images\icon.png'))
         self.helpwindow.show()
-
 
 
 class Helper(QMainWindow):

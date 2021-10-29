@@ -5,11 +5,10 @@ from PyQt5.QtWidgets import QMainWindow
 
 
 class RasaChoice(QMainWindow):
-    def __init__(self, forback, std_db):
+    def __init__(self, forback):
         super().__init__()
         uic.loadUi('ui/choser.ui', self)
         self.forback = forback
-        self.std_db = std_db
         # Создание нужных для работы переменных со стартовыми значениями
         self.rases = ["Astartes", "Necrons", "Bubonic", "Orcs"]
         self.StartUnit = [0, 6, 6, 13, 13, 100, 20, 100, 0]
