@@ -15,7 +15,6 @@ class Menu(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('ui\menuer.ui', self)
-        # Стандартная используемая база данных
         self.Soldier_choice.clicked.connect(self.soldiers)
         self.dater.clicked.connect(self.databases)
         self.pushButton.clicked.connect(self.settings)

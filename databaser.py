@@ -7,22 +7,28 @@ import sqlite3
 
 
 class Dater(QMainWindow):
-    def __init__(self, forback):
+    def __init__(self, forback, stddb=False):
         super().__init__()
         uic.loadUi('ui\databaser.ui', self)
-        self.con = sqlite3.connect("db\off_units.sqlite")       #подключаем БД
-        # Создание курсора
-        self.cur = self.con.cursor()
-        self.datasheets = self.cur.execute("""SELECT * FROM unit_datasheet
-            WHERE name != '  '""").fetchall() #получаем данные в виде списка кортежей
-        self.table_creator()
+        if not stddb:
+            self.con = sqlite3.connect("db\off_units.sqlite")       #подключаем БД
+            # Создание курсора
+            self.cur = self.con.cursor()
+            self.datasheets = self.cur.execute("""SELECT * FROM unit_datasheet
+                WHERE name != '  '""").fetchall() #получаем данные в виде списка кортежей
+            # Подключаем выход обратно в меню
+        else:
+            self.datasheets = stddb
+            
         self.forback = forback
-        # Подключаем выход обратно в меню
+        self.table_creator()
         self.pushButton.clicked.connect(self.back)
 
         self.pushButton_2.clicked.connect(self.helper)
 
         self.clear_list_button.clicked.connect(self.clear_army_list)
+
+
 
     def table_creator(self):
         self.tables.setColumnCount(16)     # Устанавливаем нужное кол-во колонок
