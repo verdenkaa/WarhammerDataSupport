@@ -1,8 +1,8 @@
-import sys, sqlite3
+import sqlite3
 from PyQt5 import uic, QtGui
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QMainWindow
 from databaser import Dater
 
 
@@ -56,6 +56,7 @@ class RasaChoice(QMainWindow):
         self.forback.show()
 
     def sort(self, datasheets):
+        # Функция сортировки списка кортежей
         NonTime = []
         for i in datasheets:
             t = True
@@ -75,6 +76,7 @@ class RasaChoice(QMainWindow):
 
 
     def startsorting(self):
+        # Счтываем значение если были изменения в вводе
         if self.PEdit.text() != "": self.StartUnit[0] = int(self.PEdit.text())
         if self.MEdit.text() != "": self.StartUnit[1] = int(self.MEdit.text())
         if self.WSEdit.text() != "": self.StartUnit[2] = int(self.WSEdit.text())
@@ -86,11 +88,13 @@ class RasaChoice(QMainWindow):
         if self.LdEdit.text() != "": self.StartUnit[8] = int(self.LdEdit.text())
         if self.SvEdit.text() != "": self.StartUnit[9] = int(self.SvEdit.text())
         self.hide()
+        # Подключаем бд
         self.con = sqlite3.connect("db/off_units.sqlite")
         self.cur = self.con.cursor()
         self.datasheets = self.cur.execute(f"""SELECT * FROM unit_datasheet WHERE rase IN {tuple(self.rases)}""").fetchall() #получаем данные в виде списка кортежей
         self.datasheets = self.sort(self.datasheets)
         print(self.datasheets)
+        # И закидываем в переменную по умолчаню
         self.datas = Dater(self.forback, self.datasheets)
         self.datas.show()
 
@@ -100,12 +104,3 @@ class Helper(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('ui\help.ui', self)
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    form = RasaChoice(RasaChoice)
-    form.setWindowTitle('Warhammer Data Support')
-    form.setWindowIcon(QIcon('ui\images\icon.png'))
-    form.show()
-    sys.exit(app.exec())

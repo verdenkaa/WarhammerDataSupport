@@ -1,8 +1,7 @@
-import sys
 from PyQt5 import uic
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import QTableView, QApplication, QMainWindow, QApplication, QGridLayout, QWidget, QTableWidget, QTableWidgetItem, QLabel, QPushButton, QInputDialog
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLabel, QPushButton, QInputDialog
 import sqlite3
 
 
@@ -10,6 +9,7 @@ class Dater(QMainWindow):
     def __init__(self, forback, stddb=False):
         super().__init__()
         uic.loadUi('ui\databaser.ui', self)
+        # Если база-тригер была изменена, считываем всю базу
         if not stddb:
             self.con = sqlite3.connect("db\off_units.sqlite")       #подключаем БД
             # Создание курсора
@@ -18,6 +18,7 @@ class Dater(QMainWindow):
                 WHERE name != '  '""").fetchall() #получаем данные в виде списка кортежей
             # Подключаем выход обратно в меню
         else:
+            # Иначе подключаем готовую считаную и отсортированую базу в списке кортежей
             self.datasheets = stddb
             
         self.forback = forback

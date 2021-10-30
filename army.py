@@ -1,8 +1,7 @@
-import sys
 from PyQt5 import uic
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import QTableView, QApplication, QMainWindow, QApplication, QGridLayout, QWidget, QTableWidget, QTableWidgetItem, QLabel, QPushButton, QInputDialog
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLabel, QPushButton
 import sqlite3
 
 
