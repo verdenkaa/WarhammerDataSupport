@@ -53,10 +53,10 @@
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>491</width>
-      <height>321</height>
+      <x>10</x>
+      <y>10</y>
+      <width>521</width>
+      <height>361</height>
      </rect>
     </property>
     <property name="mouseTracking">
@@ -70,8 +70,8 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>491</width>
-       <height>311</height>
+       <width>521</width>
+       <height>361</height>
       </rect>
      </property>
      <property name="text">
@@ -81,42 +81,6 @@
       <pixmap>images/mars.jpg</pixmap>
      </property>
     </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>180</y>
-       <width>51</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="pixmap">
-      <pixmap>images/dreadnouth.png</pixmap>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QPushButton" name="open_button">
-    <property name="geometry">
-     <rect>
-      <x>540</x>
-      <y>510</y>
-      <width>501</width>
-      <height>45</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Открыть список армии</string>
-    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

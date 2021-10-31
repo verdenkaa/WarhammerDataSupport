@@ -9,29 +9,35 @@ class Armier(QMainWindow):
     def __init__(self, forback):
         super().__init__()
         uic.loadUi('ui/army.ui', self)
-        
-        self.open_button.clicked.connect(self.after_op_file)
-
         self.forback = forback
-        self.movearmy = (self.label,) # Список лэйблов доступных к перемещению на полу боя
+        self.movearmy = [] # Список лэйблов доступных к перемещению на полу боя
         # Подключаем выход обратно в меню
-        self.pushButton.clicked.connect(self.back)
-        self.label.installEventFilter(self) # Добавляем к обьекту ивент
+        rassa, ok_pressed = QInputDialog.getItem(
+            self, "Выберите файл вашей армии", "Выберите файл вашей армии", 
+            ("Astartes", "Necrons", "Bubonic", "Orcs"), 1, False)
+        self.pushButton.clicked.connect(self.back) # Добавляем к обьекту ивент
         self.HelpButton.clicked.connect(self.helper)
+        file_name = 'army_list/' + rassa + '.txt'
+        file = open(file_name, mode = "r")
+        un_name = file.read().split('\n')
+        for i in range(len(un_name)):
+            b = self.image = QLabel(self.groupBox)
+            b.setPixmap(QPixmap(f"ui/images/{un_name[i]}.png"))
+            self.movearmy.append(b)
+            b.installEventFilter(self)
 
     def after_op_file(self):
         self.con = sqlite3.connect("db/off_units.sqlite")       #подключаем БД
         # Создание курсора
         self.cur = self.con.cursor()
 
-        rassa, ok_pressed = QInputDialog.getItem(
-            self, "Выберите файл вашей армии", "Выберите файл вашей армии", 
-            ("Astartes", "Necrons", "Bubonic", "Orcs"), 1, False)
-
+        
+        self.movearmy = []
         file_name = 'army_list/' + rassa + '.txt'
         file = open(file_name, mode = "r")
         un_name = file.read().split('\n')
 
+        print(self.movearmy)
         self.datasheets = []
         for i in un_name:
             j = self.cur.execute("""SELECT name, type, rase, power, points, move, ws, bs, strength, toughness, wound, Attacs, Ld, save, Image FROM unit_datasheet
