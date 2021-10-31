@@ -1,6 +1,6 @@
-from PyQt5 import uic
+from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtCore import QSize, Qt, QEvent
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLabel, QPushButton
 import sqlite3
 
@@ -16,9 +16,10 @@ class Armier(QMainWindow):
             WHERE name != '  '""").fetchall() #получаем данные в виде списка кортежей
         self.table_creator()
         self.forback = forback
+        self.movearmy = (self.label,) # Список лэйблов доступных к перемещению на полу боя
         # Подключаем выход обратно в меню
         self.pushButton.clicked.connect(self.back)
-
+        self.label.installEventFilter(self) # Добавляем к обьекту ивент
         self.HelpButton.clicked.connect(self.helper)
 
     def table_creator(self):
@@ -69,6 +70,20 @@ class Armier(QMainWindow):
         self.helpwindow.setWindowTitle('Warhammer Data Support')
         self.helpwindow.setWindowIcon(QIcon('ui\images\icon.png'))
         self.helpwindow.show()
+
+    def eventFilter(self, source, event):      
+        #  Если обьект в разрешенном списке
+        if source in self.movearmy:
+            # Если мишью нажали на обьект
+            if event.type() == QtCore.QEvent.MouseButtonPress:
+                self.movingButton = source
+                self.startPos = event.pos()
+            # Если мышью двигают
+            elif event.type() == QtCore.QEvent.MouseMove and self.movingButton:                
+                self.movingButton.move(source.pos() + event.pos() - self.startPos)
+        # В конце возвращаем False?? Почему он не принимает True известно только одному Богу Императору, но это не костыль а позвоночник
+        return False
+        #return super().eventFilter(source, event)  # Был еще екурсионный вариант, но ест больше памяти
 
 
 class Helper(QMainWindow):
