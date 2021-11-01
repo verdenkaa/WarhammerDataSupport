@@ -2,7 +2,7 @@ from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QSize, Qt, QEvent
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLabel, QPushButton, QInputDialog
-import sqlite3
+import sqlite3, os
 
 
 class Armier(QMainWindow):
@@ -15,16 +15,25 @@ class Armier(QMainWindow):
         rassa, ok_pressed = QInputDialog.getItem(
             self, "Выберите файл вашей армии", "Выберите файл вашей армии", 
             ("Astartes", "Necrons", "Bubonic", "Orcs"), 1, False)
-        self.pushButton.clicked.connect(self.back) # Добавляем к обьекту ивент
+        self.pushButton.clicked.connect(self.back)
         self.HelpButton.clicked.connect(self.helper)
         file_name = 'army_list/' + rassa + '.txt'
         file = open(file_name, mode = "r")
         un_name = file.read().split('\n')
+
         for i in range(len(un_name)):
-            b = self.image = QLabel(self.groupBox)
-            b.setPixmap(QPixmap(f"ui/images/{un_name[i]}.png"))
-            self.movearmy.append(b)
-            b.installEventFilter(self)
+            if os.path.exists(f"ui/images/{un_name[i]}.png") and un_name[i] != "": #Если такой юнит есть в папке
+                b = self.image = QLabel(self.groupBox)
+                b.setPixmap(QPixmap(f"ui/images/{un_name[i]}.png")) # Назначаем изображение
+                self.movearmy.append(b) # Добавляем в список разрешений
+                b.installEventFilter(self) # Добавляем к обьекту ивент
+
+        self.radioButton.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/duimmap.png")))
+        self.radioButton_2.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/marsmap.jpg")))
+        self.radioButton_3.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/armageddonmap.jpg")))
+        self.radioButton_4.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/istvanmap.jpg")))
+        self.radioButton_5.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/kadiamap.jpg")))
+        self.radioButton_6.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/nurglemap.jpg")))
 
     def after_op_file(self):
         self.con = sqlite3.connect("db/off_units.sqlite")       #подключаем БД
