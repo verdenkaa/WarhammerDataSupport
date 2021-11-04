@@ -1,7 +1,7 @@
 from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QSize, Qt, QEvent
-from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLabel, QPushButton, QInputDialog
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLabel, QPushButton, QInputDialog, QComboBox
 import sqlite3, os
 
 
@@ -47,31 +47,55 @@ class Armier(QMainWindow):
         self.radioButton_6.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/nurglemap.jpg")))
 
         print(self.movearmy)
+
         self.datasheets = []
         for i in un_name:
-            j = self.cur.execute("""SELECT name, type, rase, power, points, move, ws, bs, strength, toughness, wound, Attacs, Ld, save, Image FROM unit_datasheet
+            j = self.cur.execute("""SELECT name, type, points, move, Image, Can_use_gun_id FROM unit_datasheet
                 WHERE name = ?""", (i, )).fetchall() #получаем данные в виде списка кортежей
             if j != []:
-                self.datasheets.append(j[0])
+                j = [gg for gg in j[0]]
+                if j[5] != None:
+                    j[5] = j[5].split()
+                    jx = []
+                    for p in j[5]:
+                        px = self.cur.execute("""SELECT Gun_id, Gun_name, Range, Type, Number_of_attacks, strength, Armour_pirsing, Damage, Abilities, Points FROM unit_gun
+                            WHERE Gun_id = ?""", (p, )).fetchall()
+                        px = [gg for gg in px[0]]
+                        if px != []:
+                            jx.append(px)
+                    for p in range(len(j[5])):
+                        strochka = str(jx[p][1]) + ', Дальность стрельбы: ' + str(jx[p][2]) + ', Тип: ' + str(jx[p][3]) + ', Количество выстрелов: ' + str(jx[p][4]) + ', Сила: ' + str(jx[p][5]) + ', Пробитие брони: ' + str(jx[p][6]) + ', Урон: ' + str(jx[p][7]) + ', Особенность: ' + str(jx[p][8]) + ', Стоимость в очках:' + str(jx[p][9])
+                        j[5][p] = [strochka, jx[p][9]]
+                self.datasheets.append(j)
+                print(j)
 
         self.table_creator()
 
     def table_creator(self):
-        self.tables.setColumnCount(15)     # Устанавливаем нужное кол-во колонок
+        self.tables.setColumnCount(6)     # Устанавливаем нужное кол-во колонок
         self.tables.setRowCount(len(self.datasheets))        # и количество элементов в таблице
 
         # Устанавливаем заголовки таблицы
-        self.tables.setHorizontalHeaderLabels(['Name', 'Type', 'Rase', 'Power', 'Points', 'Move', 'Weapon Skill', 'Ballistic Skill', 'Strength', 'Toughness', 'Wound', 'Attacs', 'Leadership', 'Save', 'Look'])
+        self.tables.setHorizontalHeaderLabels(['Name', 'Type', 'Points', 'Move', 'Look', 'Gun'])
 
         # заполняем столбцы
         for i in range(len(self.datasheets)):
             for j in range(len(self.datasheets[i])):
-                if self.datasheets[i][j] == self.datasheets[i][-1]:  #проверка на 2 с конца элемент, там должно быть изображение
+                if self.datasheets[i][j] == self.datasheets[i][4]:  #проверка на 4 элемент, там должно быть изображение
                     image = QLabel(self)
                     pix = QPixmap('Unit_image/' + str(self.datasheets[i][j])) #Из списка с данными sql мы берем имя картинки
                     _size = QSize(200, 100) 
                     image.setPixmap(pix.scaled(_size, Qt.KeepAspectRatio)) #подгоняем размер
                     self.tables.setCellWidget(i, j, image) #вставляем widget в таблицу
+                elif self.datasheets[i][j] == self.datasheets[i][5]:
+                    combo = QComboBox(self)
+                    print(self.datasheets[i][5])
+                    if self.datasheets[i][5] != None:
+                        print(1)
+                        for p in range(len(self.datasheets[i][5])):
+                            combo.addItem(self.datasheets[i][5][p][0])
+                            #combo.activated[self.datasheets[i][15][p][0]].connect(self.onChanged)
+                    self.tables.setCellWidget(i, j, combo)
                 else:
                     self.tables.setItem(i, j, QTableWidgetItem(str(self.datasheets[i][j]))) #меняем в ячейке таблички значения на данные из sql
 

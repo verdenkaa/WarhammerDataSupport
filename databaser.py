@@ -42,13 +42,13 @@ class Dater(QMainWindow):
         self.button_list = [QPushButton('Добавить в список моей армии', self) for i in range(len(self.datasheets))]
         for i in range(len(self.datasheets)):
             for j in range(len(self.datasheets[i])):
-                if self.datasheets[i][j] == self.datasheets[i][14]:  #проверка на 2 с конца элемент, там должно быть изображение
+                if self.datasheets[i][j] == self.datasheets[i][14]:  #проверка на 14 элемент, там должно быть изображение
                     image = QLabel(self)
                     pix = QPixmap('Unit_image/' + str(self.datasheets[i][j])) #Из списка с данными sql мы берем имя картинки
                     _size = QSize(200, 100)
                     image.setPixmap(pix.scaled(_size, Qt.KeepAspectRatio)) #подгоняем размер
                     self.tables.setCellWidget(i, j, image) #вставляем widget в таблицу
-                elif self.datasheets[i][j] == self.datasheets[i][15]:  #проверка на 1 с конца элемент, там должна быть кнопка
+                elif self.datasheets[i][j] == self.datasheets[i][15]:  #проверка на 15 элемент, там должна быть кнопка
                     self.tables.setCellWidget(i, j, self.button_list[i]) #вставляем widget в таблицу
                     self.conn(self.button_list[i], self.datasheets[i][0], self.datasheets[i][2]) #вызываем функцию conn в которой назначим кнопке определённое действие
                 else:
