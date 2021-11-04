@@ -12,12 +12,23 @@ class Armier(QMainWindow):
         self.forback = forback
         self.movearmy = [] # Список лэйблов доступных к перемещению на полу боя
         # Подключаем выход обратно в меню
-        rassa, ok_pressed = QInputDialog.getItem(
+        self.rassa, ok_pressed = QInputDialog.getItem(
             self, "Выберите файл вашей армии", "Выберите файл вашей армии", 
             ("Astartes", "Necrons", "Bubonic", "Orcs"), 1, False)
+        #Не переставляй из функции after_op_file ничего. Там не self, а обычные значения. Меняй сразу в функции
         self.pushButton.clicked.connect(self.back)
         self.HelpButton.clicked.connect(self.helper)
-        file_name = 'army_list/' + rassa + '.txt'
+
+        self.after_op_file()  #все должно создаваться после выбора файла
+
+    def after_op_file(self):
+        self.con = sqlite3.connect("db/off_units.sqlite")       #подключаем БД
+        # Создание курсора
+        self.cur = self.con.cursor()
+
+        
+        self.movearmy = []
+        file_name = 'army_list/' + self.rassa + '.txt'
         file = open(file_name, mode = "r")
         un_name = file.read().split('\n')
 
@@ -34,17 +45,6 @@ class Armier(QMainWindow):
         self.radioButton_4.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/istvanmap.jpg")))
         self.radioButton_5.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/kadiamap.jpg")))
         self.radioButton_6.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/nurglemap.jpg")))
-
-    def after_op_file(self):
-        self.con = sqlite3.connect("db/off_units.sqlite")       #подключаем БД
-        # Создание курсора
-        self.cur = self.con.cursor()
-
-        
-        self.movearmy = []
-        file_name = 'army_list/' + rassa + '.txt'
-        file = open(file_name, mode = "r")
-        un_name = file.read().split('\n')
 
         print(self.movearmy)
         self.datasheets = []
