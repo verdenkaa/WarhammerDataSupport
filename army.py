@@ -52,22 +52,22 @@ class Armier(QMainWindow):
         for i in un_name:
             j = self.cur.execute("""SELECT name, type, points, move, Image, Can_use_gun_id FROM unit_datasheet
                 WHERE name = ?""", (i, )).fetchall() #получаем данные в виде списка кортежей
-            if j != []:
-                j = [gg for gg in j[0]]
-                if j[5] != None:
-                    j[5] = j[5].split()
-                    jx = []
+            if j != []: #проверка на наличие элементов
+                j = [gg for gg in j[0]] #переводим кортеж в список
+                if j[5] != None: #проверка на носимое юнитом оружие
+                    j[5] = j[5].split() #номера оружий переводим в список
+                    gun_har = [] #список вооружения в виде списка списков характеристик оружия
                     for p in j[5]:
                         px = self.cur.execute("""SELECT Gun_id, Gun_name, Range, Type, Number_of_attacks, strength, Armour_pirsing, Damage, Abilities, Points FROM unit_gun
-                            WHERE Gun_id = ?""", (p, )).fetchall()
-                        px = [gg for gg in px[0]]
-                        if px != []:
-                            jx.append(px)
-                    for p in range(len(j[5])):
-                        strochka = str(jx[p][1]) + ', Дальность стрельбы: ' + str(jx[p][2]) + ', Тип: ' + str(jx[p][3]) + ', Количество выстрелов: ' + str(jx[p][4]) + ', Сила: ' + str(jx[p][5]) + ', Пробитие брони: ' + str(jx[p][6]) + ', Урон: ' + str(jx[p][7]) + ', Особенность: ' + str(jx[p][8]) + ', Стоимость в очках:' + str(jx[p][9])
-                        j[5][p] = [strochka, jx[p][9]]
-                self.datasheets.append(j)
-                print(j)
+                            WHERE Gun_id = ?""", (p, )).fetchall() #берем данные из таблицы вооружения
+                        px = [gg for gg in px[0]] #переводим кортеж в список
+                        if px != []: #проверка на наличие элементов
+                            gun_har.append(px) #добавляем список характеристик в список вооружения
+                    for p in range(len(j[5])): #проходим по всем элементам
+                        strochka = str(gun_har[p][1]) + ', Дальность стрельбы: ' + str(gun_har[p][2]) + ', Тип: ' + str(gun_har[p][3]) + ', Количество выстрелов: ' + str(gun_har[p][4]) + ', Сила: ' + str(gun_har[p][5]) + ', Пробитие брони: ' + str(gun_har[p][6]) + ', Урон: ' + str(gun_har[p][7]) + ', Особенность: ' + str(gun_har[p][8]) + ', Стоимость в очках:' + str(gun_har[p][9])
+                        #Передаем характеристики в виде строки
+                        j[5][p] = [strochka, gun_har[p][9]] #заменяем значения на список со строкой характеристики и стоимостью вооружения в очках
+                self.datasheets.append(j) #добавляем данные в переменную datasheets
 
         self.table_creator()
 
@@ -89,12 +89,9 @@ class Armier(QMainWindow):
                     self.tables.setCellWidget(i, j, image) #вставляем widget в таблицу
                 elif self.datasheets[i][j] == self.datasheets[i][5]:
                     combo = QComboBox(self)
-                    print(self.datasheets[i][5])
-                    if self.datasheets[i][5] != None:
-                        print(1)
-                        for p in range(len(self.datasheets[i][5])):
-                            combo.addItem(self.datasheets[i][5][p][0])
-                            #combo.activated[self.datasheets[i][15][p][0]].connect(self.onChanged)
+                    if self.datasheets[i][5] != None: #проверка на наличие вооружения
+                        for p in range(len(self.datasheets[i][5])): #проходим по каждому оружию
+                            combo.addItem(self.datasheets[i][5][p][0]) #добавляем вариант выбора
                     self.tables.setCellWidget(i, j, combo)
                 else:
                     self.tables.setItem(i, j, QTableWidgetItem(str(self.datasheets[i][j]))) #меняем в ячейке таблички значения на данные из sql
