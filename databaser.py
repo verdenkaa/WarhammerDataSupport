@@ -2,16 +2,23 @@ from PyQt5 import uic
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLabel, QPushButton, QInputDialog
-import sqlite3
+import sqlite3, logging
 
 
 class Dater(QMainWindow):
     def __init__(self, forback, stddb=False):
         super().__init__()
-        uic.loadUi('ui\databaser.ui', self)
+        logging.basicConfig(filename = "logs.log", format = "%(asctime)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s")
+        try:
+            uic.loadUi('ui\databaser.ui', self)
+        except:
+            logging.error("Отсутствует databaser.ui")
         # Если база-тригер была изменена, считываем всю базу
-        if not stddb:
-            self.con = sqlite3.connect("db\off_units.sqlite")       #подключаем БД
+        try:
+            self.con = sqlite3.connect("db\off_units.sqlite") #подключаем БД
+        except:
+            logging.error("Отсутствует off_units.sqlite")
+        if not stddb:    
             # Создание курсора
             self.cur = self.con.cursor()
             self.datasheets = self.cur.execute("""SELECT * FROM unit_datasheet
@@ -56,6 +63,7 @@ class Dater(QMainWindow):
 
         # делаем ресайз колонок по содержимому
         self.tables.resizeColumnsToContents()
+        self.con.close()
 
     def conn(self, a, unit_name, rase):
         a.clicked.connect(lambda: self.add_unit(unit_name, rase)) #если этого не сделать, передаваться значения будут только из последней кнопки
@@ -96,4 +104,13 @@ class Helper(QMainWindow):
     # Класс окна помощи
     def __init__(self):
         super().__init__()
-        uic.loadUi('ui\help.ui', self)
+        try:
+            uic.loadUi('ui\help.ui', self)
+        except:
+            logging.error("Отсутстыует help.ui, вот зачем было удалять помощь, теперь ручками")
+        self.label.setText("""Тут все юниты, есть их характеристики.
+Кнопка добавить в армию позволяет добавить юнита в вашу
+виртальную локальную армию.
+Армии не стриаются после выхода, что-бы очистить всю
+армию нужно воспользоваться соответсвующей функцией снизу.
+Юниты упорядочены в случайном порядке, положение не влияет на силу """)

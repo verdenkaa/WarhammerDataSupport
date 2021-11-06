@@ -1,5 +1,5 @@
 import sys, base64, requests
-import os, wget
+import os, wget, subprocess, logging
 from PyQt5 import uic
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow
@@ -19,6 +19,7 @@ class Menu(QMainWindow):
         self.dater.clicked.connect(self.databases)
         self.pushButton.clicked.connect(self.settings)
         self.Create_army.clicked.connect(self.army_list)
+        logging.basicConfig(filename = "logs.log", format = "%(asctime)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s")
     
     def soldiers(self):
         self.hide()
@@ -88,14 +89,18 @@ class Settings(QMainWindow):
                     self.updateBar.setValue(100)
             # Здесь отлавливаем возможную ошибку в значениях 
             else:
+                logging.error('Ошибка на стороне контроля версий, скачайте последнюю версию приложения, или обратитесь напрямую к разработчикам если ошибку долго не фиксят')
                 self.updateBar.setValue(0)
                 self.urlUpdate.setText("Что-то не так, серьезная ошибка контроля версий, переустановите приложение")
         except:
+            logging.error('Был плохой интернет при обновлении приложения')
             self.updateBar.setValue(0)
             self.urlUpdate.setText("Технические шоколадки, проверьте интернет")
 
     def dbUpdateOnline(self):
         try:
+            self.dbUpdateBar.setValue(20)
+            subprocess.check_call(["ping", "github.com"]) #Проверка подключения к сети и возможность доступа к github
             # Переменная сылка на базу данных
             url = "https://github.com/verdenkaa/WarhammerDataSupport/blob/main/db/off_units.sqlite?raw=true"
             self.dbUpdateBar.setValue(30)
@@ -106,10 +111,12 @@ class Settings(QMainWindow):
             # Качаем последнюю версию с облака
             wget.download(url, "db/off_units.sqlite")
             self.dbUpdateBar.setValue(100)
-        except:
-            # Отлов всех ошибок, переустановка всегда должна помочь
+        except subprocess.CalledProcessError:
+            # Отлов плохого соединения или его отсутствия
+            logging.error('Был плохой интернет при обноввлении базы данных, или что-то другое. Ваш выход - переустановка')
             self.dbUpdateBar.setValue(0)
-            self.urlUpdate.setText("Технические шоколадки, проверьте интернет или переустановите приложение")
+            self.urlUpdate.setStyleSheet("color: red")
+            self.urlUpdate.setText("Технические шоколадки, проверьте интернет")
 
 
 

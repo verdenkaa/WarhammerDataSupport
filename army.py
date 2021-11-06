@@ -1,20 +1,25 @@
 from PyQt5 import uic, QtCore
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtCore import QSize, Qt, QEvent
-from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLabel, QPushButton, QInputDialog, QComboBox
-import sqlite3, os
+from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QLabel, QInputDialog, QComboBox
+import sqlite3, os, logging
+from PIL import Image
 
 
 class Armier(QMainWindow):
     def __init__(self, forback):
         super().__init__()
-        uic.loadUi('ui/army.ui', self)
+        logging.basicConfig(filename = "logs.log", format = "%(asctime)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s")
+        try:
+            uic.loadUi('ui/army.ui', self)
+        except:
+            logging.error('Отсутствует army.ui')
         self.forback = forback
         self.movearmy = [] # Список лэйблов доступных к перемещению на полу боя
         # Подключаем выход обратно в меню
         self.rassa, ok_pressed = QInputDialog.getItem(
             self, "Выберите файл вашей армии", "Выберите файл вашей армии", 
-            ("Astartes", "Necrons", "Bubonic", "Orcs"), 1, False)
+            ("Astartes", "Necrons", "Bubonic", "Orcs"), 0, False)
         #Не переставляй из функции after_op_file ничего. Там не self, а обычные значения. Меняй сразу в функции
         self.pushButton.clicked.connect(self.back)
         self.HelpButton.clicked.connect(self.helper)
@@ -22,7 +27,10 @@ class Armier(QMainWindow):
         self.after_op_file()  #все должно создаваться после выбора файла
 
     def after_op_file(self):
-        self.con = sqlite3.connect("db/off_units.sqlite")       #подключаем БД
+        try:
+            self.con = sqlite3.connect("db/off_units.sqlite") #подключаем БД
+        except:
+            logging.error('Отсутствует off_units.sqlite')     
         # Создание курсора
         self.cur = self.con.cursor()
 
@@ -32,12 +40,6 @@ class Armier(QMainWindow):
         file = open(file_name, mode = "r")
         un_name = file.read().split('\n')
 
-        for i in range(len(un_name)):
-            if os.path.exists(f"ui/images/{un_name[i]}.png") and un_name[i] != "": #Если такой юнит есть в папке
-                b = self.image = QLabel(self.groupBox)
-                b.setPixmap(QPixmap(f"ui/images/{un_name[i]}.png")) # Назначаем изображение
-                self.movearmy.append(b) # Добавляем в список разрешений
-                b.installEventFilter(self) # Добавляем к обьекту ивент
 
         self.radioButton.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/duimmap.png")))
         self.radioButton_2.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/marsmap.jpg")))
@@ -46,7 +48,7 @@ class Armier(QMainWindow):
         self.radioButton_5.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/kadiamap.jpg")))
         self.radioButton_6.toggled.connect(lambda: self.pole.setPixmap(QPixmap("ui/images/nurglemap.jpg")))
 
-        print(self.movearmy)
+        #print(self.movearmy)
 
         self.datasheets = []
         for i in un_name:
@@ -68,8 +70,21 @@ class Armier(QMainWindow):
                         #Передаем характеристики в виде строки
                         j[5][p] = [strochka, gun_har[p][9]] #заменяем значения на список со строкой характеристики и стоимостью вооружения в очках
                 self.datasheets.append(j) #добавляем данные в переменную datasheets
-
+        #print(self.datasheets[0])
         self.table_creator()
+        self.con.close()
+        for i in self.datasheets:
+                self.unit_spawn(i)
+
+    def unit_spawn(self, i, t=False, but=None, number_of_wearon=0):
+        if os.path.exists(f"ui/images/{i[0]}.png") and i[0] != "": #Если такой юнит есть в папке
+            b = self.image = QLabel(self.groupBox)
+            b.setPixmap(QPixmap(f"ui/images/{i[0]}.png")) # Назначаем изображение
+            self.movearmy.append(b) # Добавляем в список разрешений
+            b.installEventFilter(self) # Добавляем к обьекту ивент
+        else:
+            if i != "":
+                logging.error(f'Отсутствует {i[0]}')
 
     def table_creator(self):
         self.tables.setColumnCount(6)     # Устанавливаем нужное кол-во колонок
@@ -92,6 +107,8 @@ class Armier(QMainWindow):
                     if self.datasheets[i][5] != None: #проверка на наличие вооружения
                         for p in range(len(self.datasheets[i][5])): #проходим по каждому оружию
                             combo.addItem(self.datasheets[i][5][p][0]) #добавляем вариант выбора
+                            #print(self.datasheets[i], "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                        combo.currentTextChanged.connect(lambda: self.unit_spawn(self.datasheets[i], t=True, but=combo))
                     self.tables.setCellWidget(i, j, combo)
                 else:
                     self.tables.setItem(i, j, QTableWidgetItem(str(self.datasheets[i][j]))) #меняем в ячейке таблички значения на данные из sql
@@ -131,4 +148,17 @@ class Helper(QMainWindow):
     # Класс окна помощи
     def __init__(self):
         super().__init__()
-        uic.loadUi('ui\help.ui', self)
+        try:
+            uic.loadUi('ui\help.ui', self)
+        except:
+            logging.error("Отсутстыует help.ui, вот зачем было удалять помощь, теперь ручками")
+        self.label.setText("""Тут вы можете выбрать закачки для своей армии.
+Справа отображается текущая выбранная армия,
+с выбранными юнитами.
+В последней ячейке можно выбрать доступный для данного юнита вид оружия
+Слева отображаются ваши юниты на карте,
+их можно двигать любой кнопкой мыши.
+Ниже можно выбрать карты, что-бы представить
+как примерно будет выглядить ваша армия.
+Мерная карта несет только практический смысл определения масштабов,
+1 клетка равна 1 квадратному дюйму.""")

@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, logging
 from PyQt5 import uic, QtGui
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow
@@ -10,7 +10,11 @@ from databaser import Dater
 class RasaChoice(QMainWindow):
     def __init__(self, forback):
         super().__init__()
-        uic.loadUi('ui/choser.ui', self)
+        logging.basicConfig(filename = "logs.log", format = "%(asctime)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s")
+        try:
+            uic.loadUi('ui/choser.ui', self)
+        except:
+            logging.error('Отсутствует choser.ui')
         self.forback = forback
         # Создание нужных для работы переменных со стартовыми значениями
         self.rases = ["Astartes", "Necrons", "Bubonic", "Orcs"]
@@ -89,18 +93,30 @@ class RasaChoice(QMainWindow):
         if self.SvEdit.text() != "": self.StartUnit[9] = int(self.SvEdit.text())
         self.hide()
         # Подключаем бд
-        self.con = sqlite3.connect("db/off_units.sqlite")
+        try:
+            self.con = sqlite3.connect("db/off_units.sqlite")
+        except:
+            logging.error('Отсутствует off_units.sqlite')
         self.cur = self.con.cursor()
         self.datasheets = self.cur.execute(f"""SELECT * FROM unit_datasheet WHERE rase IN {tuple(self.rases)}""").fetchall() #получаем данные в виде списка кортежей
         self.datasheets = self.sort(self.datasheets)
-        print(self.datasheets)
+        #print(self.datasheets)
         # И закидываем в переменную по умолчаню
         self.datas = Dater(self.forback, self.datasheets)
         self.datas.show()
+        self.con.close()
 
 
 class Helper(QMainWindow):
     # Класс окна помощи
     def __init__(self):
         super().__init__()
-        uic.loadUi('ui\help.ui', self)
+        try:
+            uic.loadUi('ui\help.ui', self)
+        except:
+            logging.error("Отсутстыует help.ui, вот зачем было удалять помощь, теперь ручками")
+        self.label.setText("""Тут вы можете выбрать характеристики и фракцию
+будующих юнитов вашей армии.
+Можно оставить поля пустыми, тогда они будут оставлены по умолчанию.
+Ознакомится со всеми характеристиками можно в офицальной
+книге правил от Games Workshop, или на сайте Вахапедии.""")
