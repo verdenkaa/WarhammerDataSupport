@@ -53,9 +53,9 @@ class Dater(QMainWindow):
                     _size = QSize(200, 100)
                     image.setPixmap(pix.scaled(_size, Qt.KeepAspectRatio))  # подгоняем размер
                     self.tables.setCellWidget(i, j, image)  # вставляем widget в таблицу
+                    self.conn(self.button_list[i], self.datasheets[i][0], self.datasheets[i][2])  # вызываем функцию conn в которой назначим кнопке определённое действие
                 elif self.datasheets[i][j] == self.datasheets[i][15]:  # проверка на 15 элемент, там должна быть кнопка
                     self.tables.setCellWidget(i, j, self.button_list[i])  # вставляем widget в таблицу
-                    self.conn(self.button_list[i], self.datasheets[i][0], self.datasheets[i][2])  # вызываем функцию conn в которой назначим кнопке определённое действие
                 else:
                     self.tables.setItem(i, j, QTableWidgetItem(str(self.datasheets[i][j])))  # меняем в ячейке таблички значения на данные из sql
 
