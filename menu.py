@@ -7,8 +7,10 @@ from chocer import RasaChoice
 from databaser import Dater
 from army import Armier
 
-version = 0.2
-dbversion = 0.1
+f = open("soursecontrol.txt", "r")
+version = float(f.readline().rstrip())
+dbversion = float(f.readline().rstrip())
+f.close()
 
 
 class Menu(QMainWindow):
@@ -92,12 +94,14 @@ class Settings(QMainWindow):
                 logging.error('Ошибка на стороне контроля версий, скачайте последнюю версию приложения, или обратитесь напрямую к разработчикам если ошибку долго не фиксят')
                 self.updateBar.setValue(0)
                 self.urlUpdate.setText("Что-то не так, серьезная ошибка контроля версий, переустановите приложение")
-        except:
-            logging.error('Был плохой интернет при обновлении приложения')
-            self.updateBar.setValue(0)
-            self.urlUpdate.setText("Технические шоколадки, проверьте интернет")
+        except Exception as e:
+            logging.error(str(e))
+            self.dbUpdateBar.setValue(0)
+            self.urlUpdate.setStyleSheet("color: red")
+            self.urlUpdate.setText("Критическая ошибка, смотреть logs.log")
 
     def dbUpdateOnline(self):
+        global dbversion, version
         try:
             self.dbUpdateBar.setValue(20)
             subprocess.check_call(["ping", "github.com"])  # Проверка подключения к сети и возможность доступа к github
@@ -110,6 +114,17 @@ class Settings(QMainWindow):
             self.dbUpdateBar.setValue(50)
             # Качаем последнюю версию с облака
             wget.download(url, "db/off_units.sqlite")
+            self.dbUpdateBar.setValue(70)
+            # Считываем значения с облака
+            req = requests.get("https://api.github.com/repos/verdenkaa/WarhammerDataSupport/contents/soursecontrol.txt")
+            req = req.json()
+            content = base64.b64decode(req['content']).decode("utf-8").split()
+            dbversion = float(content[1])
+            if os.path.exists("soursecontrol.txt"):
+                os.remove("soursecontrol.txt")
+            f =  open("soursecontrol.txt", "w")
+            f.write(str(version) + "\n" + str(dbversion))
+            f.close()
             self.dbUpdateBar.setValue(100)
         except subprocess.CalledProcessError:
             # Отлов плохого соединения или его отсутствия
@@ -122,6 +137,11 @@ class Settings(QMainWindow):
             self.dbUpdateBar.setValue(0)
             self.urlUpdate.setStyleSheet("color: red")
             self.urlUpdate.setText("Ошибка доступа к базе данных")
+        except Exception as e:
+            logging.error(str(e))
+            self.dbUpdateBar.setValue(0)
+            self.urlUpdate.setStyleSheet("color: red")
+            self.urlUpdate.setText("Критическая ошибка, смотреть logs.log")
 
 
 def except_hook(cls, exception, traceback):
