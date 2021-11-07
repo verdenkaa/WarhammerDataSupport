@@ -19,8 +19,8 @@ class Menu(QMainWindow):
         self.dater.clicked.connect(self.databases)
         self.pushButton.clicked.connect(self.settings)
         self.Create_army.clicked.connect(self.army_list)
-        logging.basicConfig(filename = "logs.log", format = "%(asctime)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s")
-    
+        logging.basicConfig(filename="logs.log", format="%(asctime)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s")
+
     def soldiers(self):
         self.hide()
         self.sold = RasaChoice(Menu())
@@ -40,7 +40,7 @@ class Menu(QMainWindow):
         self.settingswindow.setWindowTitle('Warhammer Data Support Settings')
         self.settingswindow.setWindowIcon(QIcon('ui\images\settings.jpg'))
         self.settingswindow.show()
-    
+
     def army_list(self):
         self.hide()
         self.daterwindow = Armier(Menu())
@@ -100,7 +100,7 @@ class Settings(QMainWindow):
     def dbUpdateOnline(self):
         try:
             self.dbUpdateBar.setValue(20)
-            subprocess.check_call(["ping", "github.com"]) #Проверка подключения к сети и возможность доступа к github
+            subprocess.check_call(["ping", "github.com"])  # Проверка подключения к сети и возможность доступа к github
             # Переменная сылка на базу данных
             url = "https://github.com/verdenkaa/WarhammerDataSupport/blob/main/db/off_units.sqlite?raw=true"
             self.dbUpdateBar.setValue(30)
@@ -117,7 +117,11 @@ class Settings(QMainWindow):
             self.dbUpdateBar.setValue(0)
             self.urlUpdate.setStyleSheet("color: red")
             self.urlUpdate.setText("Технические шоколадки, проверьте интернет")
-
+        except PermissionError:
+            logging.error('Не получилось удалить базу данных')
+            self.dbUpdateBar.setValue(0)
+            self.urlUpdate.setStyleSheet("color: red")
+            self.urlUpdate.setText("Ошибка доступа к базе данных")
 
 
 def except_hook(cls, exception, traceback):
